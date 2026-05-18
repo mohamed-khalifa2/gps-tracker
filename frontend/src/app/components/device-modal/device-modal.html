@@ -1,0 +1,76 @@
+<div class="modal-backdrop" (click)="closed.emit()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ isEdit ? 'Edit Device' : 'Add Device' }}</h2>
+      <button class="modal-close" (click)="closed.emit()">✕</button>
+    </div>
+
+    @if (error()) {
+      <div class="modal-error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="submit()" class="modal-form">
+      <label>Device name *</label>
+      <input
+        type="text"
+        placeholder="My Car"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+        name="name"
+        required
+        autofocus
+      />
+
+      <label>Device ID *</label>
+      <input
+        type="text"
+        placeholder="device-1"
+        [ngModel]="deviceId()"
+        (ngModelChange)="deviceId.set($event)"
+        name="deviceId"
+        required
+        [disabled]="isEdit"
+        [title]="isEdit ? 'Cannot change after creation' : ''"
+      />
+      <span class="hint">Must match the ID your device sends in POST /api/location</span>
+
+      <label>Description</label>
+      <input
+        type="text"
+        placeholder="Optional note"
+        [ngModel]="description()"
+        (ngModelChange)="description.set($event)"
+        name="description"
+      />
+
+      <label>Map colour</label>
+      <div class="color-row">
+        @for (c of colors; track c) {
+          <button
+            type="button"
+            class="color-swatch"
+            [class.selected]="color() === c"
+            [style.background]="c"
+            (click)="color.set(c)"
+          ></button>
+        }
+      </div>
+
+      @if (isEdit) {
+        <label class="toggle-row">
+          <input
+            type="checkbox"
+            [ngModel]="isActive()"
+            (ngModelChange)="isActive.set($event)"
+            name="isActive"
+          />
+          Active (receives GPS data)
+        </label>
+      }
+
+      <button type="submit" class="btn-primary" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : isEdit ? 'Save changes' : 'Add device' }}
+      </button>
+    </form>
+  </div>
+</div>

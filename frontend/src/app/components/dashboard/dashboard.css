@@ -1,0 +1,261 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #0b0d14;
+}
+
+.dash-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 58px;
+  background: #0f1119;
+  border-bottom: 1px solid #1a1d2e;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.dash-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f0f4ff;
+}
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.875rem;
+  color: #6b7a9e;
+}
+
+.conn-indicator {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.conn-indicator.live {
+  color: #10b981;
+}
+.conn-indicator.off {
+  color: #4a5578;
+}
+
+.btn-ghost {
+  background: none;
+  border: 1px solid #1e2235;
+  color: #6b7a9e;
+  border-radius: 8px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.btn-ghost:hover {
+  border-color: #4f8ef7;
+  color: #4f8ef7;
+}
+
+.dash-main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  width: 100%;
+}
+.dash-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.dash-head h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  margin: 0 0 0.25rem;
+}
+.dash-sub {
+  color: #4a5578;
+  font-size: 0.875rem;
+  margin: 0;
+}
+.dash-empty {
+  text-align: center;
+  padding: 5rem 0;
+  color: #4a5578;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-primary {
+  background: #4f8ef7;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.btn-primary:hover {
+  opacity: 0.88;
+}
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.device-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.device-card {
+  background: #0f1119;
+  border: 1px solid #1a1d2e;
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.2s;
+}
+.device-card:hover {
+  border-color: #2d3455;
+}
+
+.device-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.device-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.device-badges {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.device-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.device-badge.active {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+.device-badge.inactive {
+  background: rgba(107, 114, 158, 0.12);
+  color: #6b7a9e;
+}
+.device-badge.moving {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  animation: movePulse 2s ease infinite;
+}
+.device-badge.parked {
+  background: rgba(107, 114, 158, 0.1);
+  color: #6b7a9e;
+}
+@keyframes movePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.device-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0;
+}
+.device-id-tag {
+  font-size: 0.78rem;
+  color: #4a5578;
+  font-family: monospace;
+  margin: 0;
+}
+.device-desc {
+  font-size: 0.84rem;
+  color: #6b7a9e;
+  margin: 0.15rem 0;
+}
+.device-seen {
+  font-size: 0.78rem;
+  color: #3a4160;
+  margin: 0.25rem 0 0.75rem;
+}
+
+.device-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.btn-track {
+  flex: 1;
+  background: rgba(79, 142, 247, 0.12);
+  color: #4f8ef7;
+  border: 1px solid rgba(79, 142, 247, 0.25);
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 0.83rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-track:hover {
+  background: rgba(79, 142, 247, 0.22);
+}
+
+.btn-edit,
+.btn-delete {
+  background: none;
+  color: #6b7a9e;
+  border: 1px solid #1e2235;
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.83rem;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.btn-edit:hover {
+  border-color: #4a5578;
+  color: #e2e8f0;
+}
+.btn-delete:hover:not(:disabled) {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+.btn-delete:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

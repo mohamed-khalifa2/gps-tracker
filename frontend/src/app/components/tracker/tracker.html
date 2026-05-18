@@ -1,0 +1,97 @@
+<div class="tracker-layout">
+  <!-- Sidebar -->
+  <aside class="tracker-sidebar">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+    <h2 class="tracker-device-name">{{ deviceId }}</h2>
+
+    <div class="conn-badge" [class.live]="connected()" [class.offline]="!connected()">
+      <span class="conn-dot"></span>
+      {{ connected() ? 'Live' : 'Disconnected' }}
+    </div>
+
+    @if (latest()) {
+      <div class="movement-status" [class.moving]="isMoving()" [class.parked]="!isMoving()">
+        <span class="movement-icon">{{ isMoving() ? '▶' : '■' }}</span>
+        <div>
+          <div class="movement-label">{{ isMoving() ? 'Moving' : 'Parked' }}</div>
+          <div class="movement-speed">{{ speed() }} km/h</div>
+        </div>
+        @if (latest()!.distanceMoved > 0) {
+          <div class="movement-dist">+{{ latest()!.distanceMoved }}m</div>
+        }
+      </div>
+
+      <div class="stats">
+        <div class="stat-row">
+          <span class="stat-label">Latitude</span
+          ><span class="stat-value">{{ fmt(latest()!.lat) }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Longitude</span
+          ><span class="stat-value">{{ fmt(latest()!.lon) }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Speed</span><span class="stat-value">{{ speed() }} km/h</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Distance</span
+          ><span class="stat-value">{{ latest()!.distanceMoved }} m</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Last ping</span
+          ><span class="stat-value">{{ timeStr(latest()!.createdAt) }}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Points</span><span class="stat-value">{{ track().length }}</span>
+        </div>
+      </div>
+    } @else {
+      @if (!loading()) {
+        <p class="no-data">No data yet.</p>
+      }
+    }
+
+    <label class="follow-toggle">
+      <input
+        type="checkbox"
+        [checked]="autoFollow()"
+        (change)="autoFollow.set($any($event.target).checked)"
+      />
+      Auto-follow
+    </label>
+
+    @if (track().length > 0) {
+      <div class="history-table">
+        <p class="hist-title">Recent pings</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Speed</th>
+              <th>Δm</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of recentPings(); track p._id) {
+              <tr [class.row-moving]="p.isMoving">
+                <td>{{ timeStr(p.createdAt) }}</td>
+                <td>{{ p.speed }}</td>
+                <td>{{ p.distanceMoved }}</td>
+                <td>
+                  <span class="pill" [class.moving]="p.isMoving" [class.parked]="!p.isMoving">
+                    {{ p.isMoving ? '▶' : '■' }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </aside>
+
+  <!-- Map: plain div, no special classes. #mapEl gets explicit px size
+       stamped via JS before Leaflet touches it. -->
+  <div #mapEl id="map"></div>
+</div>

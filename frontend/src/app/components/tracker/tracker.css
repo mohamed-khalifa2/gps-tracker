@@ -1,0 +1,247 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.tracker-layout {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────────── */
+.tracker-sidebar {
+  width: 290px;
+  height: 100vh;
+  background: #0f1119;
+  border-right: 1px solid #1a1d2e;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid #1e2235;
+  color: #6b7a9e;
+  border-radius: 8px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+  align-self: flex-start;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
+}
+.back-btn:hover {
+  border-color: #4f8ef7;
+  color: #4f8ef7;
+}
+
+.tracker-device-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  word-break: break-all;
+  margin: 0;
+}
+
+/* ── Connection badge ─────────────────────────────────────────── */
+.conn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  align-self: flex-start;
+}
+.conn-badge.live {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+}
+.conn-badge.offline {
+  background: rgba(107, 114, 158, 0.1);
+  color: #6b7a9e;
+}
+.conn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.conn-badge.live .conn-dot {
+  animation: connPulse 1.4s ease infinite;
+}
+@keyframes connPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ── Movement status ──────────────────────────────────────────── */
+.movement-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition:
+    background 0.4s,
+    border-color 0.4s;
+}
+.movement-status.moving {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.movement-status.parked {
+  background: rgba(107, 114, 158, 0.08);
+  border-color: rgba(107, 114, 158, 0.15);
+}
+.movement-icon {
+  font-size: 1.1rem;
+}
+.movement-status.moving .movement-icon {
+  color: #10b981;
+  animation: movePulse 1.5s ease infinite;
+}
+.movement-status.parked .movement-icon {
+  color: #4a5578;
+}
+@keyframes movePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.movement-label {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #e2e8f0;
+}
+.movement-speed {
+  font-size: 0.78rem;
+  color: #6b7a9e;
+  font-variant-numeric: tabular-nums;
+}
+.movement-dist {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #3a4160;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stats ────────────────────────────────────────────────────── */
+.stats {
+  background: #13151f;
+  border: 1px solid #1a1d2e;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+  border-bottom: 1px solid #1a1d2e;
+}
+.stat-row:last-child {
+  border-bottom: none;
+}
+.stat-label {
+  color: #4a5578;
+}
+.stat-value {
+  color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Follow toggle ────────────────────────────────────────────── */
+.follow-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #6b7a9e;
+  cursor: pointer;
+}
+.follow-toggle input {
+  cursor: pointer;
+}
+
+/* ── History table ────────────────────────────────────────────── */
+.history-table {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.hist-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #3a4160;
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+.history-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+.history-table th {
+  color: #3a4160;
+  text-align: left;
+  padding: 0.25rem 0.4rem;
+  font-weight: 500;
+}
+.history-table td {
+  color: #6b7a9e;
+  padding: 0.3rem 0.4rem;
+  border-top: 1px solid #13151f;
+  font-variant-numeric: tabular-nums;
+}
+.row-moving td {
+  color: #a0aec0;
+}
+.pill {
+  font-size: 0.7rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.pill.moving {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+.pill.parked {
+  background: rgba(107, 114, 158, 0.1);
+  color: #4a5578;
+}
+.no-data {
+  color: #3a4160;
+  font-size: 0.85rem;
+}
+
+/* ── Map element ──────────────────────────────────────────────── */
+/* #map gets explicit px dimensions stamped via JS (window.innerWidth - 290,
+   window.innerHeight) before L.map() runs. No CSS sizing needed here —
+   the inline style IS the size. display:block prevents any inline gap. */
+#map {
+  display: block;
+  /* Fallback dimensions — overridden immediately by JS inline style */
+  width: calc(100vw - 290px);
+  height: 100vh;
+}

@@ -1,0 +1,92 @@
+<div class="dash-layout">
+  <!-- Topbar -->
+  <header class="dash-topbar">
+    <div class="dash-brand">🛰 GPS Tracker</div>
+    <div class="dash-user">
+      <span class="conn-indicator" [class.live]="connected()" [class.off]="!connected()">
+        {{ connected() ? '● Live' : '○ Offline' }}
+      </span>
+      <span>{{ user()?.name }}</span>
+      <button class="btn-ghost" (click)="logout()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="dash-main">
+    <div class="dash-head">
+      <div>
+        <h1>My Devices</h1>
+        <p class="dash-sub">{{ devices().length }} device{{ devices().length !== 1 ? 's' : '' }}</p>
+      </div>
+      <button class="btn-primary" (click)="modal.set('add')">+ Add Device</button>
+    </div>
+
+    @if (loading()) {
+      <div class="dash-empty">Loading…</div>
+    } @else if (devices().length === 0) {
+      <div class="dash-empty">
+        <p>No devices yet.</p>
+        <button class="btn-primary" (click)="modal.set('add')">Add your first device</button>
+      </div>
+    } @else {
+      <div class="device-grid">
+        @for (dev of devices(); track dev._id) {
+          <div class="device-card">
+            <div class="device-card-top">
+              <span class="device-dot" [style.background]="dev.color"></span>
+              <div class="device-badges">
+                <!-- Movement badge -->
+                @if (dev.lastSeen) {
+                  <span
+                    class="device-badge"
+                    [class.moving]="dev.isMoving"
+                    [class.parked]="!dev.isMoving"
+                  >
+                    {{ dev.isMoving ? '▶ ' + (dev.lastSpeed || 0) + ' km/h' : '■ Parked' }}
+                  </span>
+                } @else {
+                  <span class="device-badge inactive">No signal</span>
+                }
+                <span
+                  class="device-badge"
+                  [class.active]="dev.isActive"
+                  [class.inactive]="!dev.isActive"
+                >
+                  {{ dev.isActive ? 'Active' : 'Off' }}
+                </span>
+              </div>
+            </div>
+
+            <h3 class="device-name">{{ dev.name }}</h3>
+            <p class="device-id-tag">{{ dev.deviceId }}</p>
+            @if (dev.description) {
+              <p class="device-desc">{{ dev.description }}</p>
+            }
+            <p class="device-seen">Last seen: {{ timeAgo(dev.lastSeen) }}</p>
+
+            <div class="device-actions">
+              <button class="btn-track" (click)="track(dev)">Track</button>
+              <button class="btn-edit" (click)="modal.set(dev)">Edit</button>
+              <button
+                class="btn-delete"
+                (click)="deleteDevice(dev)"
+                [disabled]="deleting() === dev._id"
+              >
+                {{ deleting() === dev._id ? '…' : 'Delete' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>
+
+<!-- Device modal -->
+@if (modal()) {
+  <app-device-modal
+    [device]="modal() === 'add' ? null : $any(modal())"
+    (saved)="onSaved($event)"
+    (closed)="modal.set(null)"
+  />
+}

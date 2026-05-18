@@ -1,0 +1,51 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">🛰</div>
+    <h1 class="auth-title">GPS Tracker</h1>
+    <p class="auth-sub">Create your account</p>
+
+    @if (error()) {
+      <div class="auth-error">{{ error() }}</div>
+    }
+
+    <form (ngSubmit)="submit()" class="auth-form">
+      <label>Full name</label>
+      <input
+        type="text"
+        placeholder="Ahmed Hassan"
+        [ngModel]="name()"
+        (ngModelChange)="name.set($event)"
+        name="name"
+        required
+        autofocus
+      />
+
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="you@example.com"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+        name="email"
+        required
+      />
+
+      <label>Password</label>
+      <input
+        type="password"
+        placeholder="At least 6 characters"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+        name="password"
+        required
+        minlength="6"
+      />
+
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        {{ loading() ? 'Creating account…' : 'Create account' }}
+      </button>
+    </form>
+
+    <p class="auth-footer">Already have an account? <a routerLink="/login">Sign in</a></p>
+  </div>
+</div>

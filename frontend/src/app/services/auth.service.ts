@@ -12,14 +12,14 @@ export class AuthService {
   private socketSvc = inject(SocketService);
   private base = 'http://localhost:3000';
 
-  // ── Signals ────────────────────────────────────────────────────
+  // ── Signals
   private _user = signal<User | null>(this.loadUser());
   private _token = signal<string | null>(localStorage.getItem('token'));
   readonly user = this._user.asReadonly();
   readonly token = this._token.asReadonly();
   readonly isLoggedIn = computed(() => !!this._user());
 
-  // ── Public API ─────────────────────────────────────────────────
+  // ── Public API
   register(payload: { name: string; email: string; password: string }) {
     return this.http
       .post<AuthResponse>(`${this.base}/api/auth/register`, payload)
@@ -41,22 +41,14 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
-  // ── Private helpers ────────────────────────────────────────────
+  // ── Private helpers
 
-  /**
-   * Stores token + user, then connects the socket.
-   * The socket sends the JWT in handshake.auth.token.
-   * The server verifies it and runs socket.join("user:<id>"),
-   * so all subsequent location-update events are scoped to this user.
-   */
   private persist(res: AuthResponse) {
     localStorage.setItem('token', res.token);
     localStorage.setItem('user', JSON.stringify(res.user));
     this._token.set(res.token);
     this._user.set(res.user);
 
-    // ← This is the moment the user "joins" their socket room.
-    //   We pass the token; the server does the join server-side.
     this.socketSvc.connect(res.token);
   }
 

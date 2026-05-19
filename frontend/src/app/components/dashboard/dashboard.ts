@@ -26,7 +26,7 @@ export class DashboardComponent {
 
   devices = signal<Device[]>([]);
   loading = signal(true);
-  modal = signal<'add' | Device | null>(null); // null=closed, 'add'=new, Device=edit
+  modal = signal<'add' | Device | null>(null);
   deleting = signal<string | null>(null);
 
   private sub!: Subscription;

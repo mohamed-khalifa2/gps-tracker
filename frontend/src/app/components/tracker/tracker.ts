@@ -26,7 +26,7 @@ const SIDEBAR_W = 290;
   templateUrl: './tracker.html',
   styleUrl: './tracker.css',
 })
-export class TrackerComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TrackerComponent {
   // #mapEl is now the direct Leaflet target — a plain <div id="map">
   @ViewChild('mapEl') mapEl!: ElementRef<HTMLDivElement>;
 
@@ -111,8 +111,6 @@ export class TrackerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // ─────────────────────────────────────────────────────────────────────────
   ngAfterViewInit() {
-    // Run outside Angular zone — Leaflet sets up many DOM listeners; keeping
-    // them outside prevents unnecessary change-detection cycles.
     this.zone.runOutsideAngular(() => this.initMap());
   }
 
@@ -124,7 +122,6 @@ export class TrackerComponent implements OnInit, AfterViewInit, OnDestroy {
     el.style.width = `${mapW}px`;
     el.style.height = `${mapH}px`;
 
-  
     const last = this.latest();
     const center: L.LatLngTuple = last ? [last.lat, last.lon] : [30.7865, 31.0004];
 
@@ -142,7 +139,6 @@ export class TrackerComponent implements OnInit, AfterViewInit, OnDestroy {
       maxZoom: 20,
     }).addTo(this.map);
 
-
     const gridCell = el.parentElement!; // .tracker-layout (grid)
     this.ro = new ResizeObserver(() => {
       const w = window.innerWidth - SIDEBAR_W;
@@ -157,7 +153,6 @@ export class TrackerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.refreshMap(); // paint any data that arrived before map was ready
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   ngOnDestroy() {
     this.sub?.unsubscribe();
     this.ro?.disconnect();

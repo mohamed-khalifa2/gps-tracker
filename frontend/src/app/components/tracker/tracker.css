@@ -145,7 +145,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Stats ────────────────────────────────────────────────────── */
+/* ── Stats ────────────── */
 .stats {
   background: #13151f;
   border: 1px solid #1a1d2e;
@@ -170,7 +170,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Follow toggle ────────────────────────────────────────────── */
+/* ── Follow toggle ───────────── */
 .follow-toggle {
   display: flex;
   align-items: center;
@@ -183,7 +183,7 @@
   cursor: pointer;
 }
 
-/* ── History table ────────────────────────────────────────────── */
+/* ── History table ──────────────────────── */
 .history-table {
   flex: 1;
   overflow-y: auto;
@@ -235,13 +235,8 @@
   font-size: 0.85rem;
 }
 
-/* ── Map element ──────────────────────────────────────────────── */
-/* #map gets explicit px dimensions stamped via JS (window.innerWidth - 290,
-   window.innerHeight) before L.map() runs. No CSS sizing needed here —
-   the inline style IS the size. display:block prevents any inline gap. */
 #map {
   display: block;
-  /* Fallback dimensions — overridden immediately by JS inline style */
   width: calc(100vw - 290px);
   height: 100vh;
 }

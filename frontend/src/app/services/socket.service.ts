@@ -2,17 +2,16 @@ import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:3000';
-
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private socket: Socket | null = null;
   readonly connected = signal(false);
+  private SOCKET_URL = 'http://localhost:3000';
 
   connect(token: string): void {
     this.disconnect();
 
-    this.socket = io(SOCKET_URL, {
+    this.socket = io(this.SOCKET_URL, {
       auth: { token },
       reconnectionAttempts: 10,
       reconnectionDelay: 2000,

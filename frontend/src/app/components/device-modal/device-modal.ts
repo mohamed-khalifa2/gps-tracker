@@ -34,7 +34,7 @@ export class DeviceModalComponent {
   ngOnInit() {
     this.isEdit = !!this.device();
     if (this.device) {
-      this.name.set(this.device.name);
+      this.name.set(this.device()[0].name);
       this.deviceId.set(this.device()[0].deviceId);
       this.description.set(this.device()[0].description ?? '');
       this.color.set(this.device()[0].color);

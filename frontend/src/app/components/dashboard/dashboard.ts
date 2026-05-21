@@ -59,6 +59,7 @@ export class DashboardComponent {
     this.deviceSvc.getAll().subscribe({
       next: (res) => {
         this.devices.set(res.data);
+        console.log(this.devices());
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
@@ -71,6 +72,7 @@ export class DashboardComponent {
       if (idx === -1) return [saved, ...list];
       const next = [...list];
       next[idx] = saved;
+      console.log(55);
       return next;
     });
   }

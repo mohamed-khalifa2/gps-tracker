@@ -10,8 +10,8 @@ export class DeviceService {
   private base = environment.BASE;
   private http = inject(HttpClient);
 
-  getAll(): Observable<APIModel<Device>> {
-    return this.http.get<APIModel<Device>>(`${this.base}/api/devices`, { withCredentials: true });
+  getAll(): Observable<APIModel<Device[]>> {
+    return this.http.get<APIModel<Device[]>>(`${this.base}/api/devices`, { withCredentials: true });
   }
   getOne(id: string): Observable<APIModel<Device>> {
     return this.http.get<APIModel<Device>>(`${this.base}/api/devices/${id}`);

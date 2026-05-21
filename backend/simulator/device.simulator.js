@@ -1,8 +1,8 @@
 require("dotenv").config({ path: "../.env" });
 const axios = require("axios");
 
-const BASE_URL = "http://localhost:3000";
-const DEVICE_ID = process.env.DEVICE_ID || "kia-3";
+const BASE_URL = "https://gps-tracker-production-0177.up.railway.app";
+const DEVICE_ID = "kia-1";
 const INTERVAL_MS = parseInt(process.env.INTERVAL_MS) || 3000;
 
 const state = { lat: 30.7865, lon: 31.0004, speed: 0 };

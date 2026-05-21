@@ -30,48 +30,48 @@
       </div>
     } @else {
       <div class="device-grid">
-        @for (dev of devices(); track dev._id) {
+        @for (device of devices(); track $index) {
           <div class="device-card">
             <div class="device-card-top">
-              <span class="device-dot" [style.background]="dev.color"></span>
+              <span class="device-dot" [style.background]="device.color"></span>
               <div class="device-badges">
                 <!-- Movement badge -->
-                @if (dev.lastSeen) {
+                @if (device.lastSeen) {
                   <span
                     class="device-badge"
-                    [class.moving]="dev.isMoving"
-                    [class.parked]="!dev.isMoving"
+                    [class.moving]="device.isMoving"
+                    [class.parked]="!device.isMoving"
                   >
-                    {{ dev.isMoving ? '▶ ' + (dev.lastSpeed || 0) + ' km/h' : '■ Parked' }}
+                    {{ device.isMoving ? '▶ ' + (device.lastSpeed || 0) + ' km/h' : '■ Parked' }}
                   </span>
                 } @else {
                   <span class="device-badge inactive">No signal</span>
                 }
                 <span
                   class="device-badge"
-                  [class.active]="dev.isActive"
-                  [class.inactive]="!dev.isActive"
+                  [class.active]="device.isActive"
+                  [class.inactive]="!device.isActive"
                 >
-                  {{ dev.isActive ? 'Active' : 'Off' }}
+                  {{ device.isActive ? 'Active' : 'Off' }}
                 </span>
               </div>
             </div>
 
-            <h3 class="device-name">{{ dev.name }}</h3>
-            <p class="device-id-tag">{{ dev.deviceId }}</p>
-            @if (dev.description) {
-              <p class="device-desc">{{ dev.description }}</p>
+            <h3 class="device-name">{{ device.name }}</h3>
+            <p class="device-id-tag">{{ device.deviceId }}</p>
+            @if (device.description) {
+              <p class="device-desc">{{ device.description }}</p>
             }
 
             <div class="device-actions">
-              <button class="btn-track" (click)="track(dev)">Track</button>
-              <button class="btn-edit" (click)="modal.set(dev)">Edit</button>
+              <button class="btn-track" (click)="track(device)">Track</button>
+              <button class="btn-edit" (click)="modal.set(device)">Edit</button>
               <button
                 class="btn-delete"
-                (click)="deleteDevice(dev)"
-                [disabled]="deleting() === dev._id"
+                (click)="deleteDevice(device)"
+                [disabled]="deleting() === device._id"
               >
-                {{ deleting() === dev._id ? '…' : 'Delete' }}
+                {{ deleting() === device._id ? '…' : 'Delete' }}
               </button>
             </div>
           </div>
@@ -85,7 +85,7 @@
 @if (modal()) {
   <app-device-modal
     [device]="modal() === 'add' ? null : $any(modal())"
-    (saved)="onSaved($event)"
     (closed)="modal.set(null)"
+    (saved)="onSaved($event)"
   />
 }

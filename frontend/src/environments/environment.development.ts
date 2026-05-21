@@ -1,3 +1,3 @@
 export const environment = {
-  BASE: 'http://localhost:3000',
+  BASE: 'https://gps-tracker-production-0177.up.railway.app',
 };

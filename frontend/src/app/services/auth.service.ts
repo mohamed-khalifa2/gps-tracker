@@ -35,6 +35,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     this._user.set(null);
     this.socketSvc.disconnect(); // clean up socket on logout
     this.router.navigate(['/login']);

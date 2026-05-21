@@ -27,6 +27,7 @@ const corsOptions = {
 };
 
 app.use(helmet());
+app.set("trust proxy", 1);
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(express.json());

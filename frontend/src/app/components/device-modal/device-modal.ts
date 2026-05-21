@@ -20,8 +20,8 @@ export class DeviceModalComponent {
 
   private deviceSvc = inject(DeviceService);
 
-  readonly colors = COLORS;
-  isEdit = false;
+  readonly colors = signal(COLORS);
+  isEdit = signal<boolean>(false);
 
   name = signal('');
   deviceId = signal('');
@@ -32,7 +32,7 @@ export class DeviceModalComponent {
   saving = signal(false);
 
   ngOnInit() {
-    this.isEdit = !!this.device();
+    this.isEdit.set(!!this.device());
     if (this.device) {
       this.name.set(this.device()[0].name);
       this.deviceId.set(this.device()[0].deviceId);
@@ -53,7 +53,7 @@ export class DeviceModalComponent {
       isActive: this.isActive(),
     };
 
-    const req = this.isEdit
+    const req = this.isEdit()
       ? this.deviceSvc.update(this.device()[0]._id, payload)
       : this.deviceSvc.create(payload);
 

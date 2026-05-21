@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
       socket.join(`user:${id}`);
       console.log(`${socket.id} → room user:${id}`);
     } catch {
-      console.warn(`${socket.id} bad token, not joining any room`);
+      console.error(`${socket.id} bad token, not joining any room`);
     }
   }
   socket.on("disconnect", () => console.log(`disconnected: ${socket.id}`));

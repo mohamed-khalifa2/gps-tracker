@@ -1,33 +1,26 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Device, DevicePayload } from '../models/device.model';
-
-interface ApiList<T> {
-  success: boolean;
-  count: number;
-  data: T[];
-}
-interface ApiSingle<T> {
-  success: boolean;
-  data: T;
-}
+import { environment } from '../../environments/environment.development';
+import { APIModel } from '../models/api.model';
+import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class DeviceService {
-  private base = 'http://localhost:3000';
+  private base = environment.BASE;
   private http = inject(HttpClient);
 
-  getAll() {
-    return this.http.get<ApiList<Device>>(`${this.base}/api/devices`, { withCredentials: true });
+  getAll(): Observable<APIModel<Device>> {
+    return this.http.get<APIModel<Device>>(`${this.base}/api/devices`, { withCredentials: true });
   }
-  getOne(id: string) {
-    return this.http.get<ApiSingle<Device>>(`${this.base}/api/devices/${id}`);
+  getOne(id: string): Observable<APIModel<Device>> {
+    return this.http.get<APIModel<Device>>(`${this.base}/api/devices/${id}`);
   }
-  create(payload: DevicePayload) {
-    return this.http.post<ApiSingle<Device>>(`${this.base}/api/devices`, payload);
+  create(payload: DevicePayload): Observable<APIModel<Device>> {
+    return this.http.post<APIModel<Device>>(`${this.base}/api/devices`, payload);
   }
-  update(id: string, p: Partial<DevicePayload>) {
-    return this.http.put<ApiSingle<Device>>(`${this.base}/api/devices/${id}`, p);
+  update(id: string, p: Partial<DevicePayload>): Observable<APIModel<Device>> {
+    return this.http.put<APIModel<Device>>(`${this.base}/api/devices/${id}`, p);
   }
   delete(id: string) {
     return this.http.delete<{ success: boolean }>(`${this.base}/api/devices/${id}`);

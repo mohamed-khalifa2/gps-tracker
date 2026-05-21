@@ -4,13 +4,14 @@ import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthResponse, User } from '../models/user.model';
 import { SocketService } from './socket.service';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private socketSvc = inject(SocketService);
-  private base = 'http://localhost:3000';
+  private base = environment.BASE;
 
   // ── Signals
   private _user = signal<User | null>(this.loadUser());
@@ -34,21 +35,14 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this._token.set(null);
     this._user.set(null);
     this.socketSvc.disconnect(); // clean up socket on logout
     this.router.navigate(['/login']);
   }
 
   // ── Private helpers
-
   private persist(res: AuthResponse) {
     localStorage.setItem('token', res.token);
-    localStorage.setItem('user', JSON.stringify(res.user));
-    this._token.set(res.token);
-    this._user.set(res.user);
-
     this.socketSvc.connect(res.token);
   }
 

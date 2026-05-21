@@ -37,10 +37,15 @@ export class DashboardComponent {
     // Live: patch device card when a new ping arrives for any of our devices
     this.sub = this.socketSvc.on<LocationPoint>('location-update').subscribe((data) => {
       this.devices.update((list) =>
-        list.map((d) =>
-          d.deviceId === data.deviceId
-            ? { ...d, isMoving: data.isMoving, lastSpeed: data.speed, lastSeen: data.createdAt }
-            : d,
+        list.map((device) =>
+          device.deviceId === data.deviceId
+            ? {
+                ...device,
+                isMoving: data.isMoving,
+                lastSpeed: data.speed,
+                lastSeen: data.createdAt,
+              }
+            : device,
         ),
       );
     });
@@ -70,15 +75,15 @@ export class DashboardComponent {
     });
   }
 
-  deleteDevice(dev: Device) {
-    if (!confirm(`Delete "${dev.name}" and all its history?`)) return;
-    this.deleting.set(dev._id);
-    this.deviceSvc.delete(dev._id).subscribe({
+  deleteDevice(device: Device) {
+    if (!confirm(`Delete "${device.name}" and all its history?`)) return;
+    this.deviceSvc.delete(device._id).subscribe({
       next: () => {
-        this.devices.update((l) => l.filter((d) => d._id !== dev._id));
+        this.devices.update((list) =>
+          list.filter((existingDevices) => existingDevices._id !== device._id),
+        );
       },
       error: (err) => alert(err.error?.message ?? 'Delete failed'),
-      complete: () => this.deleting.set(null),
     });
   }
 
@@ -88,17 +93,4 @@ export class DashboardComponent {
   logout() {
     this.auth.logout();
   }
-  timeAgo = timeAgo;
-}
-
-function timeAgo(date: string | null): string {
-  if (!date) return 'Never';
-  const diff = Date.now() - new Date(date).getTime();
-  const s = Math.floor(diff / 1000);
-  if (s < 60) return `${s}s ago`;
-  const m = Math.floor(s / 60);
-  if (m < 60) return `${m}m ago`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `${h}h ago`;
-  return new Date(date).toLocaleDateString();
 }

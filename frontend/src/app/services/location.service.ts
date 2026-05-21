@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LocationPoint } from '../models/location.model';
+import { environment } from '../../environments/environment.development';
 
 interface ApiList<T> {
   success: boolean;
@@ -15,7 +16,7 @@ interface ApiSingle<T> {
 @Injectable({ providedIn: 'root' })
 export class LocationService {
   private http = inject(HttpClient);
-  private base = 'http://localhost:3000';
+  private base = environment.BASE;
   getHistory(deviceId: string, limit = 100) {
     return this.http.get<ApiList<LocationPoint>>(
       `${this.base}/api/location/${deviceId}/history?limit=${limit}`,

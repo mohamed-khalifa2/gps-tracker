@@ -1,12 +1,13 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({ providedIn: 'root' })
 export class SocketService {
   private socket: Socket | null = null;
   readonly connected = signal(false);
-  private SOCKET_URL = 'http://localhost:3000';
+  private SOCKET_URL = environment.BASE;
 
   connect(token: string): void {
     this.disconnect();

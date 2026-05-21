@@ -62,7 +62,6 @@
             @if (dev.description) {
               <p class="device-desc">{{ dev.description }}</p>
             }
-            <p class="device-seen">Last seen: {{ timeAgo(dev.lastSeen) }}</p>
 
             <div class="device-actions">
               <button class="btn-track" (click)="track(dev)">Track</button>

@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
+import { Component, signal, inject, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Device, DevicePayload } from '../../models/device.model';
 import { DeviceService } from '../../services/device.service';
+import { APIModel } from '../../models/api.model';
 
 const COLORS = ['#4f8ef7', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4'];
 
@@ -13,9 +14,9 @@ const COLORS = ['#4f8ef7', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4'
   styleUrl: './device-modal.css',
 })
 export class DeviceModalComponent {
-  @Input() device: Device | null = null; // null = add mode
-  @Output() saved = new EventEmitter<Device>();
-  @Output() closed = new EventEmitter<void>();
+  device = input.required<Device[]>();
+  saved = output<Device>();
+  closed = output<void>();
 
   private deviceSvc = inject(DeviceService);
 
@@ -31,20 +32,19 @@ export class DeviceModalComponent {
   saving = signal(false);
 
   ngOnInit() {
-    this.isEdit = !!this.device;
+    this.isEdit = !!this.device();
     if (this.device) {
       this.name.set(this.device.name);
-      this.deviceId.set(this.device.deviceId);
-      this.description.set(this.device.description ?? '');
-      this.color.set(this.device.color);
-      this.isActive.set(this.device.isActive);
+      this.deviceId.set(this.device()[0].deviceId);
+      this.description.set(this.device()[0].description ?? '');
+      this.color.set(this.device()[0].color);
+      this.isActive.set(this.device()[0].isActive);
     }
   }
 
   submit() {
     this.error.set('');
     this.saving.set(true);
-
     const payload: DevicePayload = {
       name: this.name(),
       deviceId: this.deviceId(),
@@ -54,12 +54,12 @@ export class DeviceModalComponent {
     };
 
     const req = this.isEdit
-      ? this.deviceSvc.update(this.device!._id, payload)
+      ? this.deviceSvc.update(this.device()[0]._id, payload)
       : this.deviceSvc.create(payload);
 
     req.subscribe({
-      next: (res) => {
-        this.saved.emit(res.data);
+      next: (res: APIModel<Device>) => {
+        this.saved.emit(res.data[0]);
         this.closed.emit();
       },
       error: (err) => {

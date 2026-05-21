@@ -13,22 +13,17 @@ const errorHandler = require("./middlewares/errorHandling.middleware");
 
 const app = express();
 
-// ── Allowed origins
-const rawOrigins = process.env.CLIENT_URL || "http://localhost:4200";
-const allowedOrigins = rawOrigins.split(",").map((o) => o.trim());
+const clientUrl = process.env.CLIENT_URL ?? "http://localhost:4200";
 
+// ── Allowed origins
 const corsOptions = {
-  origin: (origin, cb) => {
-    // Allow requests with no origin (curl, Postman, same-origin)
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error(`CORS: origin ${origin} not allowed`));
-  },
+  origin: clientUrl,
   credentials: true,
 };
 
 app.use(helmet());
-app.set("trust proxy", 1);
 app.use(cors(corsOptions));
+app.set("trust proxy", 1);
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(

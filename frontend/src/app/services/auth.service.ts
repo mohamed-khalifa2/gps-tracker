@@ -44,6 +44,9 @@ export class AuthService {
   // ── Private helpers
   private persist(res: AuthResponse) {
     localStorage.setItem('token', res.token);
+    localStorage.setItem('user', JSON.stringify(res.user));
+    this._token.set(res.token);
+    this._user.set(res.user);
     this.socketSvc.connect(res.token);
   }
 

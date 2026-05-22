@@ -6,7 +6,6 @@ export interface Device {
   description?: string;
   isActive: boolean;
   isMoving: boolean;
-  lastSeen: string | null;
   lastSpeed: number;
   color: string;
   createdAt: string;

@@ -38,7 +38,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* Marker pulse ring keyframe (used by inline divIcon style) */
+/* Marker pulse ring keyframe */
 @keyframes trackerPulse {
   0% {
     transform: scale(1);

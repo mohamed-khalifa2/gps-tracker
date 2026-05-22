@@ -6,8 +6,39 @@
       <span class="conn-indicator" [class.live]="connected()" [class.off]="!connected()">
         {{ connected() ? '● Live' : '○ Offline' }}
       </span>
-      <span>{{ user()?.name }}</span>
-      <button class="btn-ghost" (click)="logout()">Sign out</button>
+      <div class="user-info">
+        <span>{{ user()?.name }}</span>
+        <div class="user-menu">
+          <button
+            class="menu-button"
+            title="Actions"
+            (click)="dropdownOpen.update((value) => !value)"
+          >
+            <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+              <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+              <path
+                d="M128 352C110.3 352 96 366.3 96 384C96 401.7 110.3 416 128 416L512 416C529.7 416 544 401.7 544 384C544 366.3 529.7 352 512 352L128 352zM128 224C110.3 224 96 238.3 96 256C96 273.7 110.3 288 128 288L512 288C529.7 288 544 273.7 544 256C544 238.3 529.7 224 512 224L128 224z"
+              />
+            </svg>
+          </button>
+          @if (dropdownOpen()) {
+            <div class="menu-panel">
+              <button
+                class="menu-item menu-item-settings"
+                (click)="openSettings(); dropdownOpen.set(false)"
+              >
+                Settings
+              </button>
+              <button
+                class="menu-item menu-item-logout"
+                (click)="logout(); dropdownOpen.set(false)"
+              >
+                Logout
+              </button>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   </header>
 
@@ -36,17 +67,14 @@
               <span class="device-dot" [style.background]="device.color"></span>
               <div class="device-badges">
                 <!-- Movement badge -->
-                @if (device.lastSeen) {
-                  <span
-                    class="device-badge"
-                    [class.moving]="device.isMoving"
-                    [class.parked]="!device.isMoving"
-                  >
-                    {{ device.isMoving ? '▶ ' + (device.lastSpeed || 0) + ' km/h' : '■ Parked' }}
-                  </span>
-                } @else {
-                  <span class="device-badge inactive">No signal</span>
-                }
+
+                <span
+                  class="device-badge"
+                  [class.moving]="device.isMoving"
+                  [class.parked]="!device.isMoving"
+                >
+                  {{ device.isMoving ? '▶ ' + (device.lastSpeed || 0) + ' km/h' : '■ Parked' }}
+                </span>
                 <span
                   class="device-badge"
                   [class.active]="device.isActive"
@@ -88,4 +116,111 @@
     (closed)="modal.set(null)"
     (saved)="onSaved($event)"
   />
+}
+
+@if (settingsOpen()) {
+  <div class="modal-backdrop" (click)="closeSettings()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Account settings</h2>
+        <button class="modal-close" (click)="closeSettings()">✕</button>
+      </div>
+
+      @if (profileError()) {
+        <div class="modal-error">{{ profileError() }}</div>
+      }
+      @if (profileMessage()) {
+        <div class="alert alert-success">{{ profileMessage() }}</div>
+      }
+
+      <form class="modal-form" (ngSubmit)="saveProfile()" #profileForm="ngForm">
+        <label>Name</label>
+        <input
+          type="text"
+          [(ngModel)]="name"
+          name="profileName"
+          placeholder="Your full name"
+          required
+          #profileNameInput="ngModel"
+        />
+        @if (profileNameInput.invalid && profileNameInput.touched) {
+          <div class="field-error">Name is required.</div>
+        }
+
+        <label>Email address</label>
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="profileEmail"
+          placeholder="you@example.com"
+          required
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+          #profileEmailInput="ngModel"
+        />
+        @if (profileEmailInput.invalid && profileEmailInput.touched) {
+          <div class="field-error">
+            {{
+              profileEmailInput.errors?.['required']
+                ? 'Email is required.'
+                : 'Enter a valid email address.'
+            }}
+          </div>
+        }
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="loadingProfile() || profileForm.invalid || !profileForm.dirty"
+        >
+          {{ loadingProfile() ? 'Saving…' : 'Save profile' }}
+        </button>
+      </form>
+
+      <div class="modal-divider"></div>
+
+      @if (passwordError()) {
+        <div class="modal-error">{{ passwordError() }}</div>
+      }
+      @if (passwordMessage()) {
+        <div class="alert alert-success">{{ passwordMessage() }}</div>
+      }
+
+      <form class="modal-form" (ngSubmit)="changePassword()" #passwordForm="ngForm">
+        <label>Current password</label>
+        <input
+          type="password"
+          [(ngModel)]="currentPassword"
+          name="currentPassword"
+          placeholder="Current password"
+          required
+          #currentPasswordInput="ngModel"
+        />
+        @if (currentPasswordInput.invalid && currentPasswordInput.touched) {
+          <div class="field-error">Current password is required.</div>
+        }
+
+        <label>New password</label>
+        <input
+          type="password"
+          [(ngModel)]="newPassword"
+          name="newPassword"
+          placeholder="New password"
+          required
+          minlength="6"
+          #newPasswordInput="ngModel"
+        />
+        @if (newPasswordInput.invalid && newPasswordInput.touched) {
+          <div class="field-error">New password must be at least 6 characters.</div>
+        }
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="loadingPassword() || passwordForm.invalid"
+        >
+          {{ loadingPassword() ? 'Updating…' : 'Update password' }}
+        </button>
+      </form>
+    </div>
+  </div>
 }

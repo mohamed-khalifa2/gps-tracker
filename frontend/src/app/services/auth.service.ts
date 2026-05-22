@@ -33,6 +33,26 @@ export class AuthService {
       .pipe(tap((res) => this.persist(res)));
   }
 
+  updateProfile(payload: { name: string; email: string }) {
+    return this.http
+      .put<{ success: boolean; data: User }>(`${this.base}/api/users/me`, payload)
+      .pipe(
+        tap((res) => {
+          const current = this._user();
+          const nextUser = current ? { ...current, ...res.data } : res.data;
+          localStorage.setItem('user', JSON.stringify(nextUser));
+          this._user.set(nextUser);
+        }),
+      );
+  }
+
+  changePassword(payload: { currentPassword: string; newPassword: string }) {
+    return this.http.put<{ success: boolean; message: string }>(
+      `${this.base}/api/users/me/password`,
+      payload,
+    );
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

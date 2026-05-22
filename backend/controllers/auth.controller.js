@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/user.model.js");
+import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
+import { StatusCodes } from "http-status-codes";
 
 const signToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -7,21 +8,20 @@ const signToken = (id) =>
   });
 
 // POST /api/auth/register
-const register = async (req, res, next) => {
+export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-
     const exists = await User.findOne({ email });
     if (exists) {
       return res
-        .status(409)
+        .status(StatusCodes.CONFLICT)
         .json({ success: false, message: "Email already registered" });
     }
 
     const user = await User.create({ name, email, password });
     const token = signToken(user._id);
 
-    res.status(201).json({
+    res.status(StatusCodes.CREATED).json({
       success: true,
       token,
       user: {
@@ -37,20 +37,20 @@ const register = async (req, res, next) => {
 };
 
 // POST /api/auth/login
-const login = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email }).select("+password");
     if (!user || !(await user.comparePassword(password))) {
       return res
-        .status(401)
+        .status(StatusCodes.UNAUTHORIZED)
         .json({ success: false, message: "Invalid credentials" });
     }
 
     const token = signToken(user._id);
 
-    res.json({
+    res.status(StatusCodes.OK).json({
       success: true,
       token,
       user: {
@@ -64,19 +64,3 @@ const login = async (req, res, next) => {
     next(err);
   }
 };
-
-// GET /api/auth/me  (protected)
-const getMe = async (req, res) => {
-  res.json({
-    success: true,
-    user: {
-      id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
-      role: req.user.role,
-      createdAt: req.user.createdAt,
-    },
-  });
-};
-
-module.exports = { register, login, getMe };

@@ -7,6 +7,8 @@
   background-image:
     radial-gradient(ellipse at 20% 50%, rgba(79, 142, 247, 0.07) 0%, transparent 60%),
     radial-gradient(ellipse at 80% 20%, rgba(124, 85, 220, 0.06) 0%, transparent 50%);
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .auth-card {
@@ -17,6 +19,7 @@
   border-radius: 16px;
   padding: 2.5rem 2rem;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
 }
 
 .auth-logo {
@@ -81,6 +84,17 @@
   color: #2d3455;
 }
 
+input.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+.field-error {
+  color: #fda4af;
+  font-size: 0.82rem;
+  margin-top: -0.35rem;
+  margin-bottom: 0.7rem;
+}
+
 .btn-primary {
   margin-top: 1.25rem;
   background: #4f8ef7;
@@ -111,4 +125,55 @@
   color: #4f8ef7;
   text-decoration: none;
   font-weight: 500;
+}
+
+@media (max-width: 520px) {
+  .auth-page {
+    padding: 0.75rem;
+  }
+
+  .auth-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .auth-logo {
+    font-size: 2rem;
+  }
+
+  .auth-title {
+    font-size: 1.3rem;
+  }
+
+  .auth-sub {
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .auth-form label {
+    font-size: 0.72rem;
+  }
+
+  .auth-form input {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .btn-primary {
+    padding: 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  .auth-footer {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .auth-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .auth-title {
+    font-size: 1.25rem;
+  }
 }

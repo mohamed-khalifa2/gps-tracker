@@ -12,13 +12,22 @@
       <label>Email</label>
       <input
         type="email"
-        placeholder="you@example.com"
+        placeholder="Enter your email address"
         [ngModel]="email()"
         (ngModelChange)="email.set($event)"
         name="email"
         required
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        #emailInput="ngModel"
         autofocus
       />
+      @if (emailInput.invalid && emailInput.touched) {
+        <div class="field-error">
+          {{
+            emailInput.errors?.['required'] ? 'Email is required.' : 'Enter a valid email address.'
+          }}
+        </div>
+      }
 
       <label>Password</label>
       <input
@@ -28,9 +37,14 @@
         (ngModelChange)="password.set($event)"
         name="password"
         required
+        minlength="6"
+        #passwordInput="ngModel"
       />
+      @if (passwordInput.invalid && passwordInput.touched) {
+        <div class="field-error">Password is required and must be at least 6 characters.</div>
+      }
 
-      <button type="submit" class="btn-primary" [disabled]="loading()">
+      <button type="submit" class="btn-primary" [disabled]="loading() || f.invalid">
         {{ loading() ? 'Signing in…' : 'Sign in' }}
       </button>
     </form>

@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-
+import mongoose from "mongoose";
 const deviceSchema = new mongoose.Schema(
   {
     name: {
@@ -30,10 +29,6 @@ const deviceSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    lastSeen: {
-      type: Date,
-      default: null,
-    },
     color: {
       type: String,
       default: "#4f8ef7", // used for map marker tinting
@@ -42,8 +37,4 @@ const deviceSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// Fast queries: all devices for a user, or device by string ID + owner
-deviceSchema.index({ owner: 1, createdAt: -1 });
-deviceSchema.index({ deviceId: 1, owner: 1 });
-
-module.exports = mongoose.model("Device", deviceSchema);
+export default mongoose.model("Device", deviceSchema);

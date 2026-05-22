@@ -7,7 +7,6 @@ import {
   ViewChild,
   signal,
   inject,
-  NgZone,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -17,7 +16,6 @@ import { LocationService } from '../../services/location.service';
 import { LocationPoint } from '../../models/location.model';
 
 const STALE_MS = 12_000;
-const SIDEBAR_W = 290;
 
 @Component({
   selector: 'app-tracker',
@@ -27,12 +25,10 @@ const SIDEBAR_W = 290;
   styleUrl: './tracker.css',
 })
 export class TrackerComponent {
-  // #mapEl is now the direct Leaflet target — a plain <div id="map">
   @ViewChild('mapEl') mapEl!: ElementRef<HTMLDivElement>;
 
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private zone = inject(NgZone);
   private socket = inject(SocketService);
   private locSvc = inject(LocationService);
 
@@ -71,10 +67,8 @@ export class TrackerComponent {
     popupAnchor: [0, -14],
   });
 
-  // ─────────────────────────────────────────────────────────────────────────
   ngOnInit() {
     this.deviceId = this.route.snapshot.paramMap.get('deviceId')!;
-
     this.locSvc.getHistory(this.deviceId, 100).subscribe({
       next: (res) => {
         const ordered = [...res.data].reverse();
@@ -101,27 +95,18 @@ export class TrackerComponent {
 
       clearTimeout(this.staleTimer);
       this.staleTimer = setTimeout(() => {
-        this.zone.run(() => {
-          this.isMoving.set(false);
-          this.speed.set(0);
-        });
+        this.isMoving.set(false);
+        this.speed.set(0);
       }, STALE_MS);
     });
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   ngAfterViewInit() {
-    this.zone.runOutsideAngular(() => this.initMap());
+    this.initMap();
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   private initMap() {
     const el = this.mapEl.nativeElement;
-    const mapW = window.innerWidth - SIDEBAR_W;
-    const mapH = window.innerHeight;
-    el.style.width = `${mapW}px`;
-    el.style.height = `${mapH}px`;
-
     const last = this.latest();
     const center: L.LatLngTuple = last ? [last.lat, last.lon] : [30.7865, 31.0004];
 
@@ -139,18 +124,16 @@ export class TrackerComponent {
       maxZoom: 20,
     }).addTo(this.map);
 
-    const gridCell = el.parentElement!; // .tracker-layout (grid)
     this.ro = new ResizeObserver(() => {
-      const w = window.innerWidth - SIDEBAR_W;
-      const h = window.innerHeight;
-      el.style.width = `${w}px`;
-      el.style.height = `${h}px`;
       this.map.invalidateSize({ animate: false });
     });
-    this.ro.observe(gridCell);
+    this.ro.observe(el);
 
-    this.mapReady = true;
-    this.refreshMap(); // paint any data that arrived before map was ready
+    requestAnimationFrame(() => {
+      this.map.invalidateSize({ animate: false });
+      this.mapReady = true;
+      this.refreshMap();
+    });
   }
 
   ngOnDestroy() {
@@ -160,7 +143,6 @@ export class TrackerComponent {
     this.map?.remove();
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   goBack() {
     this.router.navigate(['/dashboard']);
   }
@@ -174,7 +156,6 @@ export class TrackerComponent {
     return [...this.track()].reverse().slice(0, 15);
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   private refreshMap() {
     if (!this.map) return;
 

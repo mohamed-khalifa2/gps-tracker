@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/user.model.js");
+import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 
 // Verify JWT and attach req.user
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     const header = req.headers.authorization;
     if (!header || !header.startsWith("Bearer ")) {
@@ -39,5 +39,3 @@ const protect = async (req, res, next) => {
 //     }
 //     next();
 //   };
-
-module.exports = { protect };

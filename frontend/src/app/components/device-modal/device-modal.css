@@ -22,11 +22,15 @@
   background: #13151f;
   border: 1px solid #1e2235;
   border-radius: 14px;
-  width: 100%;
+  width: min(100%, 440px);
   max-width: 440px;
   padding: 1.75rem;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
   animation: slideUp 0.2s ease;
+  box-sizing: border-box;
+  margin: 1rem;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 @keyframes slideUp {
   from {
@@ -100,6 +104,15 @@
   outline: none;
   transition: border-color 0.15s;
   width: 100%;
+}
+input.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+.field-error {
+  color: #fda4af;
+  font-size: 0.78rem;
+  margin-top: -0.35rem;
+  margin-bottom: 0.8rem;
 }
 .modal-form input:focus {
   border-color: #4f8ef7;
@@ -177,4 +190,44 @@
 .btn-primary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .modal {
+    max-width: 100%;
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .modal-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1rem;
+  }
+
+  .modal-close {
+    padding: 0.35rem 0.65rem;
+  }
+
+  .modal-form label {
+    font-size: 0.72rem;
+  }
+
+  .color-row {
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 0.85rem;
+  }
+}
+
+@media (max-height: 540px) {
+  .modal {
+    max-height: calc(100vh - 1.5rem);
+  }
 }

@@ -1,15 +1,16 @@
-const router = require("express").Router();
-const {
-  createDevice,
+import express from "express";
+const router = express.Router();
+import {
   getMyDevices,
+  createDevice,
   getDevice,
   updateDevice,
   deleteDevice,
-} = require("../controllers/device.controller");
-const { protect } = require("../middlewares/protect.middleware");
+} from "../controllers/device.controller.js";
+import { protect } from "../middlewares/protect.middleware.js";
 
 router.use(protect); // all device routes require login
 router.route("/").get(getMyDevices).post(createDevice);
 router.route("/:id").get(getDevice).put(updateDevice).delete(deleteDevice);
 
-module.exports = router;
+export default router;

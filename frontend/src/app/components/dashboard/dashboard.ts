@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
@@ -11,7 +12,7 @@ import { DeviceModalComponent } from '../device-modal/device-modal';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [DeviceModalComponent],
+  imports: [DeviceModalComponent, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -28,6 +29,19 @@ export class DashboardComponent {
   loading = signal(true);
   modal = signal<'add' | Device | null>(null);
   deleting = signal<string | null>(null);
+
+  dropdownOpen = signal(false);
+  settingsOpen = signal(false);
+  name = signal('');
+  email = signal('');
+  currentPassword = signal('');
+  newPassword = signal('');
+  profileMessage = signal('');
+  passwordMessage = signal('');
+  profileError = signal('');
+  passwordError = signal('');
+  loadingProfile = signal(false);
+  loadingPassword = signal(false);
 
   private sub!: Subscription;
 
@@ -59,7 +73,6 @@ export class DashboardComponent {
     this.deviceSvc.getAll().subscribe({
       next: (res) => {
         this.devices.set(res.data);
-        console.log(this.devices());
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
@@ -72,7 +85,6 @@ export class DashboardComponent {
       if (idx === -1) return [saved, ...list];
       const next = [...list];
       next[idx] = saved;
-      console.log(55);
       return next;
     });
   }
@@ -92,6 +104,65 @@ export class DashboardComponent {
   track(dev: Device) {
     this.router.navigate(['/tracker', dev.deviceId]);
   }
+
+  openSettings() {
+    this.dropdownOpen.set(false);
+    const user = this.user();
+    this.name.set(user?.name ?? '');
+    this.email.set(user?.email ?? '');
+    this.currentPassword.set('');
+    this.newPassword.set('');
+    this.profileMessage.set('');
+    this.passwordMessage.set('');
+    this.profileError.set('');
+    this.passwordError.set('');
+    this.loadingProfile.set(false);
+    this.loadingPassword.set(false);
+    this.settingsOpen.set(true);
+  }
+
+  closeSettings() {
+    this.settingsOpen.set(false);
+  }
+
+  saveProfile() {
+    this.profileMessage.set('');
+    this.profileError.set('');
+    this.loadingProfile.set(true);
+
+    this.auth.updateProfile({ name: this.name(), email: this.email() }).subscribe({
+      next: () => {
+        this.profileMessage.set('Profile updated successfully.');
+        this.loadingProfile.set(false);
+      },
+      error: (err) => {
+        this.profileError.set(err.error?.message ?? 'Unable to save profile.');
+        this.loadingProfile.set(false);
+      },
+    });
+  }
+
+  changePassword() {
+    this.passwordMessage.set('');
+    this.passwordError.set('');
+    this.loadingPassword.set(true);
+
+    this.auth
+      .changePassword({ currentPassword: this.currentPassword(), newPassword: this.newPassword() })
+      .subscribe({
+        next: () => {
+          this.passwordMessage.set('Password updated successfully.');
+          this.currentPassword.set('');
+          this.newPassword.set('');
+          this.loadingPassword.set(false);
+        },
+        error: (err) => {
+          this.passwordError.set(err.error?.message ?? 'Unable to update password.');
+          this.loadingPassword.set(false);
+        },
+      });
+  }
+
   logout() {
     this.auth.logout();
   }

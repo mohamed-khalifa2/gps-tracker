@@ -1,22 +1,27 @@
-const Device = require("../models/device.model.js");
-const Location = require("../models/location.model.js");
+import Device from "../models/device.model.js";
+import Location from "../models/location.model.js";
+import { StatusCodes } from "http-status-codes";
 
 // Helper: fetch device and assert ownership in one step
-const findOwnDevice = async (deviceId, userId, res) => {
+export const findOwnDevice = async (deviceId, userId, res) => {
   const device = await Device.findById(deviceId);
   if (!device) {
-    res.status(404).json({ success: false, message: "Device not found" });
+    res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ success: false, message: "Device not found" });
     return null;
   }
   if (device.owner.toString() !== userId.toString()) {
-    res.status(403).json({ success: false, message: "Not your device" });
+    res
+      .status(StatusCodes.FORBIDDEN)
+      .json({ success: false, message: "Not your device" });
     return null;
   }
   return device;
 };
 
 // POST /api/devices
-const createDevice = async (req, res, next) => {
+export const createDevice = async (req, res, next) => {
   try {
     const { name, deviceId, description, color } = req.body;
 
@@ -24,7 +29,7 @@ const createDevice = async (req, res, next) => {
     const conflict = await Device.findOne({ deviceId });
     if (conflict) {
       return res
-        .status(409)
+        .status(StatusCodes.CONFLICT)
         .json({ success: false, message: "deviceId already in use" });
     }
 
@@ -36,37 +41,39 @@ const createDevice = async (req, res, next) => {
       owner: req.user._id,
     });
 
-    res.status(201).json({ success: true, data: device });
+    res.status(StatusCodes.CREATED).json({ success: true, data: device });
   } catch (err) {
     next(err);
   }
 };
 
 // GET /api/devices  — only the caller's devices
-const getMyDevices = async (req, res, next) => {
+export const getMyDevices = async (req, res, next) => {
   try {
     const devices = await Device.find({ owner: req.user._id }).sort({
       createdAt: -1,
     });
-    res.json({ success: true, count: devices.length, data: devices });
+    res
+      .status(StatusCodes.OK)
+      .json({ success: true, count: devices.length, data: devices });
   } catch (err) {
     next(err);
   }
 };
 
 // GET /api/devices/:id
-const getDevice = async (req, res, next) => {
+export const getDevice = async (req, res, next) => {
   try {
     const device = await findOwnDevice(req.params.id, req.user._id, res);
     if (!device) return;
-    res.json({ success: true, data: device });
+    res.status(StatusCodes.OK).json({ success: true, data: device });
   } catch (err) {
     next(err);
   }
 };
 
 // PUT /api/devices/:id
-const updateDevice = async (req, res, next) => {
+export const updateDevice = async (req, res, next) => {
   try {
     const device = await findOwnDevice(req.params.id, req.user._id, res);
     if (!device) return;
@@ -78,31 +85,24 @@ const updateDevice = async (req, res, next) => {
     if (isActive !== undefined) device.isActive = isActive;
 
     await device.save();
-    res.json({ success: true, data: device });
+    res.status(StatusCodes.OK).json({ success: true, data: device });
   } catch (err) {
     next(err);
   }
 };
 
 // DELETE /api/devices/:id  — also wipes location history
-const deleteDevice = async (req, res, next) => {
+export const deleteDevice = async (req, res, next) => {
   try {
     const device = await findOwnDevice(req.params.id, req.user._id, res);
     if (!device) return;
-
     await Location.deleteMany({ deviceId: device.deviceId });
     await device.deleteOne();
 
-    res.json({ success: true, message: "Device and its history deleted" });
+    res
+      .status(StatusCodes.OK)
+      .json({ success: true, message: "Device and its history deleted" });
   } catch (err) {
     next(err);
   }
-};
-
-module.exports = {
-  createDevice,
-  getMyDevices,
-  getDevice,
-  updateDevice,
-  deleteDevice,
 };

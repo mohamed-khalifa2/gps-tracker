@@ -1,0 +1,87 @@
+<div class="profile-page">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div>
+        <p class="profile-label">Account settings</p>
+        <h1>Manage your profile</h1>
+        <p class="profile-desc">Update your name and email, or change your password anytime.</p>
+      </div>
+      <a routerLink="/dashboard" class="btn-ghost">Back to dashboard</a>
+    </div>
+
+    <section class="profile-section">
+      <div class="section-heading">
+        <h2>Profile information</h2>
+        <p>Use your current account details for device access and notifications.</p>
+      </div>
+
+      @if (profileError()) {
+        <div class="alert alert-error">{{ profileError() }}</div>
+      }
+      @if (profileMessage()) {
+        <div class="alert alert-success">{{ profileMessage() }}</div>
+      }
+
+      <div class="form-grid">
+        <label>
+          Name
+          <input type="text" [(ngModel)]="name" placeholder="Your full name" autocomplete="name" />
+        </label>
+
+        <label>
+          Email address
+          <input
+            type="email"
+            [(ngModel)]="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+          />
+        </label>
+      </div>
+
+      <button class="btn-primary" (click)="saveProfile()" [disabled]="loadingProfile()">
+        {{ loadingProfile() ? 'Saving…' : 'Save profile' }}
+      </button>
+    </section>
+
+    <section class="profile-section">
+      <div class="section-heading">
+        <h2>Change password</h2>
+        <p>Enter your current password and choose a strong new one.</p>
+      </div>
+
+      @if (passwordError()) {
+        <div class="alert alert-error">{{ passwordError() }}</div>
+      }
+      @if (passwordMessage()) {
+        <div class="alert alert-success">{{ passwordMessage() }}</div>
+      }
+
+      <div class="form-grid">
+        <label>
+          Current password
+          <input
+            type="password"
+            [(ngModel)]="currentPassword"
+            placeholder="Current password"
+            autocomplete="current-password"
+          />
+        </label>
+
+        <label>
+          New password
+          <input
+            type="password"
+            [(ngModel)]="newPassword"
+            placeholder="New password"
+            autocomplete="new-password"
+          />
+        </label>
+      </div>
+
+      <button class="btn-primary" (click)="changePassword()" [disabled]="loadingPassword()">
+        {{ loadingPassword() ? 'Updating…' : 'Update password' }}
+      </button>
+    </section>
+  </div>
+</div>

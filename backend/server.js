@@ -1,19 +1,25 @@
-require("dotenv").config();
-const express = require("express");
-const http = require("http");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const rateLimit = require("express-rate-limit");
-const { Server } = require("socket.io");
-const jwt = require("jsonwebtoken");
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import http from "http";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
+import { Server } from "socket.io";
+import jwt from "jsonwebtoken";
 
-const connectDB = require("./config/db");
-const errorHandler = require("./middlewares/errorHandling.middleware");
+import connectDB from "./config/db.js";
+import { errorHandler } from "./middlewares/errorHandling.middleware.js";
+
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import deviceRoutes from "./routes/device.routes.js";
+import locationRoutes from "./routes/location.route.js";
 
 const app = express();
 
-const clientUrl = process.env.CLIENT_URL ?? "http://localhost:4200";
+const clientUrl = process.env.CLIENT_URL || "http://localhost:4200";
 
 // ── Allowed origins
 const corsOptions = {
@@ -62,10 +68,10 @@ io.on("connection", (socket) => {
 connectDB();
 
 // Routes
-app.use("/api/auth", require("./routes/auth.routes"));
-app.use("/api/users", require("./routes/user.routes"));
-app.use("/api/devices", require("./routes/device.routes"));
-app.use("/api/location", require("./routes/location.route"));
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/devices", deviceRoutes);
+app.use("/api/location", locationRoutes);
 
 app.use((req, res) =>
   res.status(404).json({ success: false, message: "Route not found" }),

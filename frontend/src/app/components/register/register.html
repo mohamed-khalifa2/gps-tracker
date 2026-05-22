@@ -8,7 +8,7 @@
       <div class="auth-error">{{ error() }}</div>
     }
 
-    <form (ngSubmit)="submit()" class="auth-form">
+    <form (ngSubmit)="submit()" class="auth-form" #f="ngForm">
       <label>Full name</label>
       <input
         type="text"
@@ -17,8 +17,12 @@
         (ngModelChange)="name.set($event)"
         name="name"
         required
+        #nameInput="ngModel"
         autofocus
       />
+      @if (nameInput.invalid && nameInput.touched) {
+        <div class="field-error">Your name is required.</div>
+      }
 
       <label>Email</label>
       <input
@@ -28,7 +32,16 @@
         (ngModelChange)="email.set($event)"
         name="email"
         required
+        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+        #emailInput="ngModel"
       />
+      @if (emailInput.invalid && emailInput.touched) {
+        <div class="field-error">
+          {{
+            emailInput.errors?.['required'] ? 'Email is required.' : 'Enter a valid email address.'
+          }}
+        </div>
+      }
 
       <label>Password</label>
       <input
@@ -39,9 +52,13 @@
         name="password"
         required
         minlength="6"
+        #passwordInput="ngModel"
       />
+      @if (passwordInput.invalid && passwordInput.touched) {
+        <div class="field-error">Password must be at least 6 characters.</div>
+      }
 
-      <button type="submit" class="btn-primary" [disabled]="loading()">
+      <button type="submit" class="btn-primary" [disabled]="loading() || f.invalid">
         {{ loading() ? 'Creating account…' : 'Create account' }}
       </button>
     </form>

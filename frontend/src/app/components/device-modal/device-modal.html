@@ -9,7 +9,7 @@
       <div class="modal-error">{{ error() }}</div>
     }
 
-    <form (ngSubmit)="submit()" class="modal-form">
+    <form (ngSubmit)="submit()" class="modal-form" #deviceForm="ngForm">
       <label>Device name *</label>
       <input
         type="text"
@@ -18,8 +18,12 @@
         (ngModelChange)="name.set($event)"
         name="name"
         required
+        #nameInput="ngModel"
         autofocus
       />
+      @if (nameInput.invalid && nameInput.touched) {
+        <div class="field-error">Device name is required.</div>
+      }
 
       <label>Device ID *</label>
       <input
@@ -29,9 +33,11 @@
         (ngModelChange)="deviceId.set($event)"
         name="deviceId"
         required
-        [disabled]="isEdit()"
-        [title]="isEdit() ? 'Cannot change after creation' : ''"
+        #deviceIdInput="ngModel"
       />
+      @if (deviceIdInput.invalid && deviceIdInput.touched) {
+        <div class="field-error">Device ID is required.</div>
+      }
       <span class="hint">Must match the ID your device sends in POST /api/location</span>
 
       <label>Description</label>
@@ -68,7 +74,7 @@
         </label>
       }
 
-      <button type="submit" class="btn-primary" [disabled]="saving()">
+      <button type="submit" class="btn-primary" [disabled]="saving() || deviceForm.invalid">
         {{ saving() ? 'Saving…' : isEdit() ? 'Save changes' : 'Add device' }}
       </button>
     </form>

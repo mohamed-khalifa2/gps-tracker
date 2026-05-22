@@ -1,10 +1,11 @@
-const router = require("express").Router();
-const {
+import express from "express";
+const router = express.Router();
+import {
   postLocation,
   getHistory,
   getLatest,
-} = require("../controllers/location.controller");
-const { protect } = require("../middlewares/protect.middleware");
+} from "../controllers/location.controller.js";
+import { protect } from "../middlewares/protect.middleware.js";
 
 // Device posts its GPS — no auth (device uses its deviceId string)
 router.post("/", postLocation);
@@ -13,4 +14,4 @@ router.post("/", postLocation);
 router.get("/:deviceId/history", protect, getHistory);
 router.get("/:deviceId/latest", protect, getLatest);
 
-module.exports = router;
+export default router;

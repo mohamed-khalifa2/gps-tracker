@@ -1,10 +1,11 @@
-const router = require("express").Router();
-const {
+import express from "express";
+const router = express.Router();
+import {
   getProfile,
   updateProfile,
   changePassword,
-} = require("../controllers/user.controller.js");
-const { protect } = require("../middlewares/protect.middleware.js");
+} from "../controllers/user.controller.js";
+import { protect } from "../middlewares/protect.middleware.js";
 
 router.use(protect);
 
@@ -12,4 +13,4 @@ router.get("/me", getProfile);
 router.put("/me", updateProfile);
 router.put("/me/password", changePassword);
 
-module.exports = router;
+export default router;

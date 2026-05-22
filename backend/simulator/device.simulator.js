@@ -1,7 +1,8 @@
-require("dotenv").config({ path: "../.env" });
-const axios = require("axios");
+import dotenv from "dotenv";
+dotenv.config();
+import axios from "axios";
 
-const BASE_URL = "https://gps-tracker-production-0177.up.railway.app";
+const BASE_URL = "http://localhost:3000";
 const DEVICE_ID = "kia-1";
 const INTERVAL_MS = parseInt(process.env.INTERVAL_MS) || 3000;
 

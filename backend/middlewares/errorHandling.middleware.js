@@ -1,29 +1,11 @@
-const errorHandler = (err, req, res, next) => {
-  let statusCode = err.statusCode || 500;
-  let message = err.message || "Internal Server Error";
+import { StatusCodes } from "http-status-codes";
+export const errorHandler = (err, req, res, next) => {
+  console.error(err.stack);
 
-  // Mongoose duplicate key
-  if (err.code === 11000) {
-    const field = Object.keys(err.keyValue)[0];
-    message = `${field} already exists`;
-    statusCode = 409;
-  }
+  const customError = {
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    msg: err.message || "Something went wrong try again later",
+  };
 
-  // Mongoose validation error
-  if (err.name === "ValidationError") {
-    message = Object.values(err.errors)
-      .map((e) => e.message)
-      .join(", ");
-    statusCode = 400;
-  }
-
-  console.error(`[${new Date().toISOString()}] ${statusCode} — ${message}`);
-
-  res.status(statusCode).json({
-    success: false,
-    message,
-    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
-  });
+  res.status(customError.statusCode).json({ msg: customError.msg });
 };
-
-module.exports = errorHandler;
